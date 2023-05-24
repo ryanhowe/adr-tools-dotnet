@@ -14,13 +14,16 @@ public static class Extentions
         return (number, title);
     }
 
-    public static string ToFileName(this string text)
-    {
-        return text.Trim().ToLower().Replace(' ', '-');
-    }
-
     public static string ToFileName(this Entry entry)
     {
         return $"{entry.Number}-{entry.Title.ToFileName()}.md";
+    }
+
+    public static string ToFileName(this string title)
+    {
+        if (string.IsNullOrEmpty(title))
+            throw new ArgumentOutOfRangeException(title, $"{nameof(title)} can not be null or empty");
+        
+        return $"{title.ToLower().Replace(' ', '-')}.md";
     }
 }

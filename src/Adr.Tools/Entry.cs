@@ -1,10 +1,8 @@
 ﻿using Adr.Tools;
 
-using static System.Int32;
-
 public record Entry(int Number, string Title, string FileName)
 {
-    public static IEnumerable<Entry> From(string[] files)
+    public static IEnumerable<Entry> From(string?[] files)
     {
         var entries = new List<Entry>();
         foreach (var file in files)
@@ -15,9 +13,12 @@ public record Entry(int Number, string Title, string FileName)
         return entries;
     }
 
+    public override string ToString() => $"{Number}. {Title}";
+
     private static Entry From(string file)
     {
         (int number, string title) = file.ParseEntryNumberAndTitle();
         return new Entry(number, title, file);
     }
+    
 }

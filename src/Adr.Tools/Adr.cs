@@ -4,11 +4,11 @@ namespace Adr.Tools;
 
 public class Adr
 {
-    private const string DefaultAdrPath = "docs/adr";
+    public const string DefaultAdrPath = "docs/adr";
     private string _baseDirectory = string.Empty;
     private const string AdrConfig = ".adr-dir";
 
-    private Adr()
+    internal Adr()
     {
     }
 
@@ -27,7 +27,6 @@ public class Adr
 
         if (IsRoot(path))
         {
-            Console.WriteLine($"{path}");
             Console.WriteLine("ADR is not initialized");
             return;
         }
@@ -43,7 +42,7 @@ public class Adr
     }
 
 
-    private void Init(string path)
+    internal void Init(string path)
     {
         path = string.IsNullOrEmpty(path)
             ? DefaultAdrPath
@@ -68,64 +67,48 @@ public class Adr
     }
 
 
-    private void NewEntry(string? arg, int superseded)
+    internal void NewEntry(string? arg, int superseded)
     {
         DiscoverAdrPath();
         if (string.IsNullOrEmpty(_baseDirectory))
             return;
 
         DiscoverAdrEntries();
-        Console.WriteLine($"{_baseDirectory}");
-        Console.WriteLine($"{arg}");
-        Console.WriteLine($"{superseded}");
+
+        var entry = new Entry(NextEntryNumber(), arg, arg.ToFileName());
+        Console.WriteLine($"{entry.Number} {entry.Title} {entry.FileName}");
+    }
+
+    private int NextEntryNumber()
+    {
+        var lastEntry = Entries.Last();
+        return lastEntry.Number + 1;
     }
 
     private void DiscoverAdrEntries()
     {
-        var files = Directory.GetFiles(_baseDirectory);
+        if (string.IsNullOrEmpty(_baseDirectory))
+            return;
+        
+        var files = Directory.EnumerateFiles(_baseDirectory, "*.md").Select(Path.GetFileName).ToArray();
         Entries = Entry.From(files);
     }
 
 
-    public static Command GetNewEntryCommand()
+
+
+    internal void ListEntries()
     {
-        var newEntry = new Command("new", "Generate new ADR");
-        newEntry.AddAlias("-n");
-
-        var title = new Argument<string>("title", "Ex: \"Record architecture decisions\"");
-        newEntry.AddArgument(title);
-
-        var supersede = new Option<Int32>("supersedes", "The ADR number to be superseded");
-        supersede.AddAlias("-s");
-
-        newEntry.AddOption(supersede);
-
-        newEntry.SetHandler(NewEntryHandler, title, supersede);
-        return newEntry;
-
-        void NewEntryHandler(string? arg, int superseded)
+        DiscoverAdrPath();
+        DiscoverAdrEntries();
+         
+        foreach (var entry in Entries)
         {
-            var adr = new Adr();
-            adr.NewEntry(arg, superseded);
+            Console.WriteLine(entry.ToString());
         }
     }
 
-    public static Command GetInitCommand()
-    {
-        var path = new Option<string>("path", "Path to initialize ADR in (default docs/adr)");
-        path.AddAlias("-p");
-        path.SetDefaultValue(DefaultAdrPath);
 
-        var cmd = new Command("init", "InitHandler ADR") { path };
-        cmd.SetHandler(InitHandler, path);
-        return cmd;
-
-        void InitHandler(string? path)
-        {
-            var adr = new Adr();
-            adr.Init(path ?? DefaultAdrPath);
-        }
-    }
 
 
     private static bool PathContainsRecords(string path)
@@ -137,5 +120,11 @@ public class Adr
     private static bool PathExists(string path)
     {
         return Directory.Exists(path);
+    }
+
+    public void LinkEntries(int source, string sourceLink, int target, string targetLink)
+    {
+        DiscoverAdrPath();
+        DiscoverAdrEntries();
     }
 }

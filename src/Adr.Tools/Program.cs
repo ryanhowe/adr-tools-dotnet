@@ -7,15 +7,12 @@ using Adr.Tools;
 
 var rootCommand = new RootCommand("ADR-Tools")
 {
-    Adr.Tools.Adr.GetInitCommand(),
-    Adr.Tools.Adr.GetNewEntryCommand(),
+    Commands.GetInitCommand(),
+    Commands.GetNewEntryCommand(),
+    Commands.GetListEntriesCommand(),
+    Commands.GetLinkEntriesCommand()
 };
 
 rootCommand.Description = "ADR-Tools \nTools for managing architectural decision logs";
-
-// rootCommand.SetHandler(() =>
-// {
-//     
-// });
 
 await rootCommand.InvokeAsync(args);
