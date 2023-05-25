@@ -7,6 +7,12 @@ public record Entry(int Number, string Title, string FileName)
         var entries = new List<Entry>();
         foreach (var file in files)
         {
+            if (string.IsNullOrEmpty(file))
+                continue;
+            
+            if (string.Equals(file,"template.md", StringComparison.OrdinalIgnoreCase))
+                continue;
+            
             entries.Add(From(file));
         }
 

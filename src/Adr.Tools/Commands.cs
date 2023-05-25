@@ -6,50 +6,64 @@ public static class Commands
 {
     public static Command GetNewEntryCommand()
     {
-        var newEntry = new Command("new", "Generate new ADR");
+        var newEntry = new Command("new", Help.NewDescription);
         newEntry.AddAlias("-n");
 
-        var title = new Argument<string>("title", "Ex: \"Record architecture decisions\"");
-        newEntry.AddArgument(title);
-
-        var supersede = new Option<Int32>("supersedes", "The ADR number to be superseded");
-        supersede.AddAlias("-s");
+        var supersede = SupersedeOption();
         newEntry.AddOption(supersede);
 
-        newEntry.SetHandler(NewEntryHandler, title, supersede);
+        var link = LinkOption();
+        newEntry.AddOption(link);
+
+        var title = new Argument<string>("title", Help.TitleOptionDescription);
+        newEntry.AddArgument(title);
+
+        newEntry.SetHandler(NewEntryHandler, title, supersede, link);
         return newEntry;
 
-        void NewEntryHandler(string? arg, int superseded)
+        void NewEntryHandler(string title, int[] superseded, string[] links)
         {
             var adr = new Adr();
-            adr.NewEntry(arg, superseded);
+            adr.NewEntry(title, superseded, links);
         }
+    }
+
+
+    private static Option<string[]> LinkOption()
+    {
+        var link = new Option<string[]>("link",Help.LinkOptionDescription);
+        link.AddAlias("-l");
+        link.Arity = ArgumentArity.ZeroOrMore;
+        return link;
+    }
+
+    private static Option<int[]> SupersedeOption()
+    {
+        var supersede = new Option<int[]>("supersedes", Help.SupersedeOptionDescription);
+        supersede.AddAlias("-s");
+        supersede.Arity = ArgumentArity.ZeroOrMore;
+        return supersede;
     }
 
     public static Command GetLinkEntriesCommand()
     {
-        var link = new Command("link", 
-        @"Creates a link between two ADRs, from SOURCE to TARGET new.
-SOURCE and TARGET are both a reference (number or partial filename) to an ADR
-LINK is the description of the link created in the SOURCE.
-    REVERSE-LINK is the description of the link created in the TARGET
+        var link = new Command("link", Help.LinkCommandDescription);
 
-E.g. to create link ADR 12 to ADR 10
-
-adr link 12 Amends 10 ""Amended by""");
-        
-        var source = new Argument<Int32>("source", "Source entry number");
-        var target = new Argument<Int32>("target", "Target entry number");
-        var sourceLink = new Argument<string>("source-text", "Source link text");
-        sourceLink.SetDefaultValue("Amends");
-        var targetLink = new Argument<string>("target-text", "target link text");
-        targetLink.SetDefaultValue("Amended by");
+        var source = new Argument<Int32>("source", Help.SourceArgumentDescription);
         link.AddArgument(source);
+
+        var sourceLink = new Argument<string>("source-text", Help.SourceTextArgumentDescription);
         link.AddArgument(sourceLink);
+        sourceLink.SetDefaultValue("Amends");
+
+        var target = new Argument<Int32>("target", Help.TargetArgumentDescription);
         link.AddArgument(target);
+
+        var targetLink = new Argument<string>("target-text", Help.TargetTextArgumentDescription);
+        targetLink.SetDefaultValue("Amended by");
         link.AddArgument(targetLink);
-        
-        link.SetHandler(LinkHandler,source, sourceLink, target, targetLink);
+
+        link.SetHandler(LinkHandler, source, sourceLink, target, targetLink);
         return link;
 
         void LinkHandler(int source, string sourceLink, int target, string targetLink)
@@ -61,12 +75,15 @@ adr link 12 Amends 10 ""Amended by""");
 
     public static Command GetInitCommand()
     {
-        var path = new Option<string>("path", "Path to initialize ADR in (default docs/adr)");
+        var cmd = new Command("init", Help.InitCommandDescription);
+
+        var path = new Option<string>("path", Help.PathOptionDescription);
         path.AddAlias("-p");
         path.SetDefaultValue(Adr.DefaultAdrPath);
+        cmd.AddOption(path);
 
-        var cmd = new Command("init", "InitHandler ADR") { path };
         cmd.SetHandler(InitHandler, path);
+
         return cmd;
 
         void InitHandler(string? path)
@@ -76,10 +93,9 @@ adr link 12 Amends 10 ""Amended by""");
         }
     }
 
-
     public static Command GetListEntriesCommand()
     {
-        var listEntries = new Command("list", "List all entries");
+        var listEntries = new Command("list", Help.ListCommandDescription);
         listEntries.AddAlias("-l");
         listEntries.SetHandler(ListEntries);
 

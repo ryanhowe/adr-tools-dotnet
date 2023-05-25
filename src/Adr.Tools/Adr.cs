@@ -67,15 +67,12 @@ public class Adr
     }
 
 
-    internal void NewEntry(string? arg, int superseded)
+    internal void NewEntry(string title, int[] superseded, string[] links)
     {
-        DiscoverAdrPath();
-        if (string.IsNullOrEmpty(_baseDirectory))
+        if (!DiscoverAdrEntries())
             return;
 
-        DiscoverAdrEntries();
-
-        var entry = new Entry(NextEntryNumber(), arg, arg.ToFileName());
+        var entry = new Entry(NextEntryNumber(), title, title.ToFileName());
         Console.WriteLine($"{entry.Number} {entry.Title} {entry.FileName}");
     }
 
@@ -85,30 +82,30 @@ public class Adr
         return lastEntry.Number + 1;
     }
 
-    private void DiscoverAdrEntries()
+    private bool DiscoverAdrEntries()
     {
+        DiscoverAdrPath();
         if (string.IsNullOrEmpty(_baseDirectory))
-            return;
-        
-        var files = Directory.EnumerateFiles(_baseDirectory, "*.md").Select(Path.GetFileName).ToArray();
-        Entries = Entry.From(files);
+            return false;
+
+        Entries = Entry.From(Directory
+            .EnumerateFiles(_baseDirectory, "*.md")
+            .Select(Path.GetFileName)
+            .ToArray());
+
+        return true;
     }
-
-
-
 
     internal void ListEntries()
     {
-        DiscoverAdrPath();
-        DiscoverAdrEntries();
-         
+        if (!DiscoverAdrEntries())
+            return;
+
         foreach (var entry in Entries)
         {
             Console.WriteLine(entry.ToString());
         }
     }
-
-
 
 
     private static bool PathContainsRecords(string path)
@@ -124,7 +121,7 @@ public class Adr
 
     public void LinkEntries(int source, string sourceLink, int target, string targetLink)
     {
-        DiscoverAdrPath();
-        DiscoverAdrEntries();
+        if (!DiscoverAdrEntries())
+            return;
     }
 }
