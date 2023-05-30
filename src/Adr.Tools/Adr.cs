@@ -202,5 +202,29 @@ public class Adr
     {
         if (!DiscoverAdrEntries())
             return;
+
+        var sourceEntry = GetEntryByNumber(source);
+        var targetEntry = GetEntryByNumber(target);
+
+        if (sourceEntry is null || string.IsNullOrEmpty(sourceEntry.FileName))
+        {
+            Console.Write($"Invalid source entry {source}");
+            return;
+        }
+
+        if (targetEntry is null || string.IsNullOrEmpty(targetEntry.FileName))
+        {
+            Console.Write($"Invalid target entry {target}");
+            return;
+        }
+
+        var sourceText = GetEntryText(sourceEntry)
+            .AddLinkToEntry(targetEntry, sourceLink);
+
+        var targetText = GetEntryText(targetEntry)
+            .AddLinkToEntry(sourceEntry, targetLink);
+        
+        WriteEntry(sourceEntry, sourceText);
+        WriteEntry(targetEntry, targetText);
     }
 }

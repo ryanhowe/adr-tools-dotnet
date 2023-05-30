@@ -40,7 +40,7 @@ REVERSE-LINK is the description of the link created in the TARGET
 
 E.g. to create link ADR 12 to ADR 10
 
-adr link 12 Amends 10 ""Amended by""";
+adr link 12 ""Amends"" 10 ""Amended by""";
 
     public static string? InitCommandDescription => @"Initialises the directory of architeture decision records:
 * creates a subdirectory of the current working directory

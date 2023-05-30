@@ -42,7 +42,7 @@ public static class Extensions
         return entryText.Replace("NUMBER", number.ToString());
     }
 
-    public static string LinkToEntry(this string entryText, Entry linkedEntry, string linkText)
+    public static string AddLinkToEntry(this string entryText, Entry linkedEntry, string linkText)
     {
         var link = $"{linkText} [{linkedEntry.Number}. {linkedEntry.Title}]({linkedEntry.FileName})";
         return entryText.Replace("## Context", $"{link}{Environment.NewLine}{Environment.NewLine}## Context{Environment.NewLine}{Environment.NewLine}");
@@ -50,7 +50,7 @@ public static class Extensions
 
     public static string AddSupersededByLink(this string entryText, Entry supersedingEntry)
     {
-        return entryText.LinkToEntry(supersedingEntry, "Superseded by");
+        return entryText.AddLinkToEntry(supersedingEntry, "Superseded by");
     }
 
     public static string AddSupersedesLinks(this string entryText, int[] superseded, IEnumerable<Entry> entries)
@@ -61,7 +61,7 @@ public static class Extensions
             if (entry is null || string.IsNullOrEmpty(entry.FileName))
                 continue;
 
-            entryText = entryText.LinkToEntry(entry, "Supersedes");
+            entryText = entryText.AddLinkToEntry(entry, "Supersedes");
         }
 
         return entryText;
@@ -69,7 +69,7 @@ public static class Extensions
 
     public static string AddReverseEntryLink(this string entryText, Entry linkedEntry, LinkParameter link)
     {
-        return entryText.LinkToEntry(linkedEntry, link.TargetText);
+        return entryText.AddLinkToEntry(linkedEntry, link.TargetText);
     }
 
     public static string AddEntryLinks(this string entryText, IEnumerable<LinkParameter> links,
@@ -81,7 +81,7 @@ public static class Extensions
             if (entry is null || string.IsNullOrEmpty(entry.FileName))
                 continue;
 
-            entryText = entryText.LinkToEntry(entry, link.SourceText);
+            entryText = entryText.AddLinkToEntry(entry, link.SourceText);
         }
 
         return entryText;
