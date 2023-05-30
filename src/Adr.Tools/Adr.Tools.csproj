@@ -10,6 +10,8 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>adr</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionSuffix>beta-1</VersionSuffix>
     </PropertyGroup>
 
     <ItemGroup>

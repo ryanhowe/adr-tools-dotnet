@@ -10,37 +10,7 @@ public class Adr
     {
     }
 
-    public IEnumerable<Entry> Entries { get; private set; } = new List<Entry>();
-
-    private void DiscoverAdrPath(string? path = null)
-    {
-        if (!string.IsNullOrEmpty(_baseDirectory))
-            return;
-
-        path ??= Directory.GetCurrentDirectory();
-        var file = $"{path}/{AdrConfig}";
-        if (File.Exists(file))
-        {
-            _baseDirectory = File.ReadAllText(file);
-            if (PathExists(_baseDirectory))
-                return;
-        }
-
-        if (IsRoot(path))
-        {
-            Console.WriteLine("ADR is not initialized");
-            return;
-        }
-
-        var parent = Directory.GetParent(path)?.FullName;
-        if (!string.IsNullOrEmpty(parent))
-            DiscoverAdrPath(parent);
-    }
-
-    private bool IsRoot(string path)
-    {
-        return Directory.Exists(path + "/.git");
-    }
+    private IEnumerable<Entry> Entries { get; set; } = new List<Entry>();
 
 
     internal void Init(string path)
@@ -59,12 +29,6 @@ public class Adr
         File.WriteAllText(".adr-dir", _baseDirectory);
         File.WriteAllText(_baseDirectory + "/0001-record-adr.md", EntryTemplates.InitTemplate());
         Console.WriteLine($"ADR Log created at {_baseDirectory}");
-    }
-
-    private void CreatePath(string path)
-    {
-        var dir = Directory.CreateDirectory(path);
-        _baseDirectory = dir.FullName;
     }
 
 
@@ -90,6 +54,47 @@ public class Adr
         UpdateLinkedEntries(entryLinks, entry);
 
         Console.WriteLine($"{entry.Number} {entry.Title} {entry.FileName}");
+    }
+
+    public void LinkEntries(int source, string sourceLink, int target, string targetLink)
+    {
+        if (!DiscoverAdrEntries())
+            return;
+
+        var sourceEntry = GetEntryByNumber(source);
+        var targetEntry = GetEntryByNumber(target);
+
+        if (sourceEntry is null || string.IsNullOrEmpty(sourceEntry.FileName))
+        {
+            Console.Write($"Invalid source entry {source}");
+            return;
+        }
+
+        if (targetEntry is null || string.IsNullOrEmpty(targetEntry.FileName))
+        {
+            Console.Write($"Invalid target entry {target}");
+            return;
+        }
+
+        var sourceText = GetEntryText(sourceEntry)
+            .AddLinkToEntry(targetEntry, sourceLink);
+
+        var targetText = GetEntryText(targetEntry)
+            .AddLinkToEntry(sourceEntry, targetLink);
+
+        WriteEntry(sourceEntry, sourceText);
+        WriteEntry(targetEntry, targetText);
+    }
+
+    internal void ListEntries()
+    {
+        if (!DiscoverAdrEntries())
+            return;
+
+        foreach (var entry in Entries)
+        {
+            Console.WriteLine(entry.ToString());
+        }
     }
 
     private void UpdateLinkedEntries(IEnumerable<LinkParameter> entryLinks, Entry entry)
@@ -175,56 +180,51 @@ public class Adr
         return true;
     }
 
-    internal void ListEntries()
-    {
-        if (!DiscoverAdrEntries())
-            return;
-
-        foreach (var entry in Entries)
-        {
-            Console.WriteLine(entry.ToString());
-        }
-    }
-
 
     private static bool PathContainsRecords(string path)
     {
         return Directory.GetFiles(path, "*.md").Any();
     }
 
-
     private static bool PathExists(string path)
     {
         return Directory.Exists(path);
     }
 
-    public void LinkEntries(int source, string sourceLink, int target, string targetLink)
+
+    private void CreatePath(string path)
     {
-        if (!DiscoverAdrEntries())
+        var dir = Directory.CreateDirectory(path);
+        _baseDirectory = dir.FullName;
+    }
+
+    private void DiscoverAdrPath(string? path = null)
+    {
+        if (!string.IsNullOrEmpty(_baseDirectory))
             return;
 
-        var sourceEntry = GetEntryByNumber(source);
-        var targetEntry = GetEntryByNumber(target);
-
-        if (sourceEntry is null || string.IsNullOrEmpty(sourceEntry.FileName))
+        path ??= Directory.GetCurrentDirectory();
+        var file = $"{path}/{AdrConfig}";
+        if (File.Exists(file))
         {
-            Console.Write($"Invalid source entry {source}");
+            _baseDirectory = File.ReadAllText(file);
+            if (PathExists(_baseDirectory))
+                return;
+        }
+
+        if (IsRoot(path))
+        {
+            Console.WriteLine("ADR is not initialized");
             return;
         }
 
-        if (targetEntry is null || string.IsNullOrEmpty(targetEntry.FileName))
-        {
-            Console.Write($"Invalid target entry {target}");
-            return;
-        }
+        var parent = Directory.GetParent(path)?.FullName;
+        if (!string.IsNullOrEmpty(parent))
+            DiscoverAdrPath(parent);
+    }
 
-        var sourceText = GetEntryText(sourceEntry)
-            .AddLinkToEntry(targetEntry, sourceLink);
-
-        var targetText = GetEntryText(targetEntry)
-            .AddLinkToEntry(sourceEntry, targetLink);
-        
-        WriteEntry(sourceEntry, sourceText);
-        WriteEntry(targetEntry, targetText);
+    private bool IsRoot(string path)
+    {
+        return Directory.Exists(path + "/.git");
     }
 }

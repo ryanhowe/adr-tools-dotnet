@@ -28,13 +28,6 @@ public class ExtensionsTests
 
     public class when_parsing_link_parameters
     {
-        private readonly ITestOutputHelper output;
-
-        public when_parsing_link_parameters(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-
         [Fact]
         public void should_parse_link_parameters()
         {
