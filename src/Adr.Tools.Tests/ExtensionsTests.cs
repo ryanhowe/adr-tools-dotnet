@@ -1,9 +1,9 @@
 namespace Adr.Tools.Tests;
 
-public class ExtentionsTests
+public class ExtensionsTests
 {
     [Fact]
-    public void Test1()
+    public void should_parse_entry_number_and_title_from_file_name()
     {
         var fileName = @"0001-record-adr.md";
         var (number, title) = fileName.ParseEntryNumberAndTitle();

@@ -1,6 +1,6 @@
 ﻿namespace Adr.Tools;
 
-public static class Extentions
+public static class Extensions
 {
     public static (int number, string title) ParseEntryNumberAndTitle(this string file)
     {
