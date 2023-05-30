@@ -1,6 +1,4 @@
-﻿using System.CommandLine;
-
-namespace Adr.Tools;
+﻿namespace Adr.Tools;
 
 public class Adr
 {

@@ -7,6 +7,9 @@
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <AssemblyName>adr</AssemblyName>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>adr</ToolCommandName>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
