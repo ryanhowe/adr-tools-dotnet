@@ -14,6 +14,9 @@ public class Adr
 
     private void DiscoverAdrPath(string? path = null)
     {
+        if (!string.IsNullOrEmpty(_baseDirectory))
+            return;
+
         path ??= Directory.GetCurrentDirectory();
         var file = $"{path}/{AdrConfig}";
         if (File.Exists(file))
@@ -54,7 +57,7 @@ public class Adr
 
         CreatePath(path);
         File.WriteAllText(".adr-dir", _baseDirectory);
-        File.WriteAllText(_baseDirectory + "/0001-record-adr.md", EntryTemplate.InitTemplate());
+        File.WriteAllText(_baseDirectory + "/0001-record-adr.md", EntryTemplates.InitTemplate());
         Console.WriteLine($"ADR Log created at {_baseDirectory}");
     }
 
@@ -70,8 +73,86 @@ public class Adr
         if (!DiscoverAdrEntries())
             return;
 
-        var entry = new Entry(NextEntryNumber(), title, title.ToFileName());
+        var entry = Entry.Create(NextEntryNumber(), title);
+
+        var entryLinks = links.ParseLinkParameters();
+
+        var entryText = GetTemplateText()
+            .ReplaceTemplateDate(DateTime.Today)
+            .ReplaceTemplateNumber(entry.Number)
+            .ReplaceTemplateTitle(entry.Title)
+            .AddSupersedesLinks(superseded, Entries)
+            .AddEntryLinks(entryLinks, Entries);
+
+        WriteEntry(entry, entryText);
+
+        UpdateSupersededEntries(superseded, entry);
+        UpdateLinkedEntries(entryLinks, entry);
+
         Console.WriteLine($"{entry.Number} {entry.Title} {entry.FileName}");
+    }
+
+    private void UpdateLinkedEntries(IEnumerable<LinkParameter> entryLinks, Entry entry)
+    {
+        foreach (var linkParameter in entryLinks)
+        {
+            var linkedEntry = GetEntryByNumber(linkParameter.Number);
+            if (linkedEntry is null || string.IsNullOrEmpty(linkedEntry.FileName))
+            {
+                Console.WriteLine($"Invalid entry number to be linked {linkParameter.Number}");
+                continue;
+            }
+
+            var entryText = GetEntryText(linkedEntry);
+            entryText = entryText.AddReverseEntryLink(entry, linkParameter);
+            WriteEntry(linkedEntry, entryText);
+        }
+    }
+
+    private void UpdateSupersededEntries(int[] supersededEntryNumbers, Entry entry)
+    {
+        foreach (var s in supersededEntryNumbers)
+        {
+            var supersededEntry = GetEntryByNumber(s);
+            if (supersededEntry is null || string.IsNullOrEmpty(supersededEntry.FileName))
+            {
+                Console.WriteLine($"Invalid entry number to be superseded {s}");
+                continue;
+            }
+
+            var entryText = GetEntryText(supersededEntry);
+            entryText = entryText.AddSupersededByLink(entry);
+            WriteEntry(supersededEntry, entryText);
+        }
+    }
+
+    private Entry? GetEntryByNumber(int entryNumber) => Entries.FirstOrDefault(e => e.Number == entryNumber);
+
+
+    private string GetEntryText(Entry entry)
+    {
+        DiscoverAdrPath();
+        return File.Exists(FullEntryPath(entry))
+            ? File.ReadAllText(FullEntryPath(entry))
+            : string.Empty;
+    }
+
+    private string FullEntryPath(Entry entry) => $"{_baseDirectory}/{entry.FileName}";
+
+
+    private string GetTemplateText()
+    {
+        DiscoverAdrPath();
+        return File.Exists(TemplatePath)
+            ? File.ReadAllText(TemplatePath)
+            : EntryTemplates.TemplateText;
+    }
+
+    private string TemplatePath => $"{_baseDirectory}/template.md";
+
+    private void WriteEntry(Entry entry, string entryText)
+    {
+        File.WriteAllText(_baseDirectory + $"/{entry.FileName}", entryText);
     }
 
     private int NextEntryNumber()

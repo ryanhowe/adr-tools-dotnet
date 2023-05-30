@@ -9,10 +9,10 @@ public record Entry(int Number, string Title, string FileName)
         {
             if (string.IsNullOrEmpty(file))
                 continue;
-            
-            if (string.Equals(file,"template.md", StringComparison.OrdinalIgnoreCase))
+
+            if (string.Equals(file, "template.md", StringComparison.OrdinalIgnoreCase))
                 continue;
-            
+
             entries.Add(From(file));
         }
 
@@ -26,5 +26,10 @@ public record Entry(int Number, string Title, string FileName)
         (int number, string title) = file.ParseEntryNumberAndTitle();
         return new Entry(number, title, file);
     }
-    
+
+    public static Entry Create(int entryNumber, string title)
+    {
+        var fileName = $"{entryNumber:0000}-{title.ToFileName()}";
+        return new Entry(entryNumber, title, fileName);
+    }
 }

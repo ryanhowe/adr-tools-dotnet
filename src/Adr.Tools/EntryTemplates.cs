@@ -1,6 +1,6 @@
 ﻿namespace Adr.Tools;
 
-public class EntryTemplate
+public class EntryTemplates
 {
     internal static string Template(int number, string title) =>
         $@"# {number}. {title} 
@@ -46,10 +46,11 @@ What becomes easier or more difficult to do and any risks introduced by the chan
 
     public static string GetTemplateText()
     {
-        return EntryTemplate.TemplateText;
+        return EntryTemplates.TemplateText;
     }
 
-    public static string TemplateText => @"# NUMBER. TITLE 
+    public static string TemplateText => 
+@"# NUMBER. TITLE 
 
 Date: DATE 
 

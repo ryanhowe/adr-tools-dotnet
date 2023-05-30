@@ -1,3 +1,5 @@
+using Xunit.Abstractions;
+
 namespace Adr.Tools.Tests;
 
 public class ExtensionsTests
@@ -22,5 +24,44 @@ public class ExtensionsTests
     public void give_empty_title_should_throw_exception()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => string.Empty.ToFileName());
+    }
+
+    public class when_parsing_link_parameters
+    {
+        private readonly ITestOutputHelper output;
+
+        public when_parsing_link_parameters(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
+        [Fact]
+        public void should_parse_link_parameters()
+        {
+            string link = "2:Clarifies:Clarified by";
+            var links = new[] { link };
+            var param = links.ParseLinkParameters();
+            param.First().Number.Should().Be(2);
+            param.First().SourceText.Should().Be("Clarifies");
+            param.First().TargetText.Should().Be("Clarified by");
+        }
+
+        [Fact]
+        public void should_report_invalid_non_number_entry_number()
+        {
+            string link = "A:Clarifies:Clarified by";
+            var links = new[] { link };
+            var param = links.ParseLinkParameters();
+            param.Any().Should().BeFalse();
+        }
+
+        [Fact]
+        public void should_report_invalid_link_parameters()
+        {
+            string link = "1:Clarifies";
+            var links = new[] { link };
+            var param = links.ParseLinkParameters();
+            param.Any().Should().BeFalse();
+        }
     }
 }

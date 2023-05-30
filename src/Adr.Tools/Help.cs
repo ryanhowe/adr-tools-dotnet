@@ -4,7 +4,7 @@ public class Help
 {
     internal static string LinkOptionDescription => @"TARGET:LINK:REVERSE-LINK
 Links the new ADR to a previous ADR.
-TARGET is a reference (number or partial filename) of a previous decision.
+TARGET is a reference (Number or partial filename) of a previous decision.
 LINK is the description of the link created in the new ADR.
 REVERSE-LINK is the description of the link created in the
 existing ADR that will refer to the new ADR.";
@@ -20,21 +20,21 @@ E.g. to create a new ADR with the title ""Use MySQL Database"":
 
 E.g. to create a new ADR that supersedes ADR 12:
 
-    adr new -s 12 Use PostgreSQL Database
+    adr new -s 12 ""Use PostgreSQL Database""
 
 E.g. to create a new ADR that supersedes ADRs 3 and 4, and amends ADR 5:
 
-    adr new -s 3 -s 4 -l ""5:Amends:Amended by"" Use Riak CRDTs to cope with scale";
+    adr new -s 3 -s 4 -l ""5:Amends:Amended by"" ""Use Riak CRDTs to cope with scale""";
 
     public static string SupersedeOptionDescription =>
-        @"A reference (number or partial filename) of a previous
+        @"A reference (Number or partial filename) of a previous
 decision that the new decision supersedes. A Markdown link
 to the superseded ADR is inserted into the Status section.
 The status of the superseded ADR is changed to record that
 it has been superseded by the new ADR";
 
     public static string LinkCommandDescription => @"Creates a link between two ADRs, from SOURCE to TARGET new.
-SOURCE and TARGET are both a reference (number or partial filename) to an ADR
+SOURCE and TARGET are both a reference (Number or partial filename) to an ADR
 LINK is the description of the link created in the SOURCE.
 REVERSE-LINK is the description of the link created in the TARGET
 
@@ -52,7 +52,7 @@ If the DIRECTORY is not given, the ADRs are stored in the directory `doc/adr`.";
     public static string PathOptionDescription => "Path to initialize ADR in (default docs/adr)";
     public static string ListCommandDescription => "Lists the architecture decision records";
     public static string TargetTextArgumentDescription => "target link text";
-    public static string TargetArgumentDescription => "Target entry number";
-    public static string SourceArgumentDescription => "Source entry number";
+    public static string TargetArgumentDescription => "Target entry Number";
+    public static string SourceArgumentDescription => "Source entry Number";
     public static string SourceTextArgumentDescription => "Source link text";
 }
