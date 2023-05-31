@@ -17,14 +17,14 @@ dotnet tool install -g adr-tools
 Use the `adr` command to manage ADRs. Try running `adr help`.
 
 ADRs are stored in a subdirectory of your project as Markdown files.
-The default directory is `doc/adr`, but you can specify the directory
+The default directory is `docs/adr`, but you can specify the directory
 when you initialise the ADR log.
 
 1. Create an ADR directory in the root of your project:
 
         adr init 
 
-   This will create a directory named `doc/adr`
+   This will create a directory named `docs/adr`
    containing the first ADR, which records that you are using ADRs
    to record architectural decisions and links to
    [Michael Nygard's article on the subject][ADRs].
