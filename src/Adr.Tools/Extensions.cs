@@ -45,7 +45,7 @@ public static class Extensions
     public static string AddLinkToEntry(this string entryText, Entry linkedEntry, string linkText)
     {
         var link = $"{linkText} [{linkedEntry.Number}. {linkedEntry.Title}]({linkedEntry.FileName})";
-        return entryText.Replace("## Context", $"{link}\n\n## Context");
+        return entryText.Replace("## Context", $"{link}{Environment.NewLine}{Environment.NewLine}## Context");
     }
 
     public static string AddSupersededByLink(this string entryText, Entry supersedingEntry)

@@ -1,19 +1,5 @@
 ﻿namespace Adr.Tools.Tests;
 
-public class when_creating_new_entries 
-{
-    private Adr _adr;
-    public when_creating_new_entries()
-    {
-        _adr = new Adr();
-    }
-    
-    // [Fact]
-    // public void should_
-    //
-}
-
-
 public class EntryTests
 {
     public class when_creating_entry

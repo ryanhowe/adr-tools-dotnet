@@ -10,7 +10,7 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>adr</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <VersionPrefix>0.1.1</VersionPrefix>
+        <VersionPrefix>0.1.2</VersionPrefix>
         <!--        <VersionSuffix>beta-1</VersionSuffix>-->
         <PackageId>adr-tools</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>

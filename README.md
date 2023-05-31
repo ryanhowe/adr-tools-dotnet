@@ -3,7 +3,7 @@ ADR Tools
 
 dotnet command-line tool for working with a log of [Architecture Decision Records][ADRs] (ADRs).
 
-Inspiration: https://github.com/npryce/adr-tools
+dotnet global tool implementation of https://github.com/npryce/adr-tools.
 
 Quick Start
 -----------

@@ -56,7 +56,7 @@ public class Adr
         Console.WriteLine($"{entry.Number} {entry.Title} {entry.FileName}");
     }
 
-    public void LinkEntries(int source, string sourceLink, int target, string targetLink)
+    internal void LinkEntries(int source, string sourceLink, int target, string targetLink)
     {
         if (!DiscoverAdrEntries())
             return;
