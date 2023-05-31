@@ -10,13 +10,13 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>adr</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <VersionPrefix>0.1.2</VersionPrefix>
-        <!--        <VersionSuffix>beta-1</VersionSuffix>-->
+        <VersionPrefix>0.1.3</VersionPrefix>
         <PackageId>adr-tools</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <Copyright>Copyright © 2023 Ryan Howe</Copyright>
         <Authors>Ryan Howe</Authors>
+        <Description>dotnet global tool implementation of https://github.com/npryce/adr-tools</Description>
     </PropertyGroup>
 
     <ItemGroup>
