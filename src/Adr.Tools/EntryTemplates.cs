@@ -5,7 +5,7 @@ public class EntryTemplates
     public static string InitTemplate() =>
     @$"# 1. Record Architecture Decisions
 
-{DateTime.Now:yyyy-M-d}
+{DateTime.Today:yyyy-MM-dd}
 
 ## Status
 

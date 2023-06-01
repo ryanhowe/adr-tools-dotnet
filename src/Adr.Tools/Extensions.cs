@@ -29,7 +29,7 @@ public static class Extensions
 
     public static string ReplaceTemplateDate(this string entryText, DateTime date)
     {
-        return entryText.Replace("DATE", $"{date:yyyy-M-d}");
+        return entryText.Replace("DATE", $"{date:yyyy-MM-dd}");
     }
 
     public static string ReplaceTemplateTitle(this string entryText, string title)
